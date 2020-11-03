@@ -2,18 +2,29 @@ service: sls-chat-server
 
 frameworkVersion: '2'
 
+plugins:
+  - serverless-python-requirements
+
+package:
+  exclude:
+    - node_modules/**
+    - env/**
+    - README.md
+    - package.json
+    - package-lock.json
+    - requirements.txt
+
+custom:
+  default_stage: dev
+  stage: ${opt:stage, self:custom.default_stage}
+
 provider:
   name: aws
   runtime: python3.8
-
-  stage: dev
   region: ap-southeast-1
 
   apiGateway:
     shouldStartNameWithService: true
-
-plugins:
-  - serverless-python-requirements
 
 functions:
   hello:
@@ -22,3 +33,33 @@ functions:
       - http:
           path: hello
           method: get
+
+resources:
+  Resources:
+    ChatMessageTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: chat-message-table
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: user
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: user
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+
+    ChatAuditTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: chat-audit-table
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
