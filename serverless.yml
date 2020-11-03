@@ -23,6 +23,10 @@ provider:
   runtime: python3.8
   region: ap-southeast-1
 
+  environment:
+    REGION: ap-southeast-1
+    DYNAMODB_HOST: https://dynamodb.ap-southeast-1.amazonaws.com
+
   apiGateway:
     shouldStartNameWithService: true
 
@@ -40,6 +44,24 @@ functions:
     events:
       - http:
           path: hello
+          method: get
+  chatcount:
+    handler: chat/handler.chatCount
+    events:
+      - http:
+          path: chatcount
+          method: get
+  postchat:
+    handler: chat/handler.postChat
+    events:
+      - http:
+          path: chat
+          method: post
+  getchat:
+    handler: chat/handler.getChat
+    events:
+      - http:
+          path: chat
           method: get
 
 resources:
