@@ -9,6 +9,12 @@ provider:
   stage: dev
   region: ap-southeast-1
 
+  apiGateway:
+    shouldStartNameWithService: true
+
+plugins:
+  - serverless-python-requirements
+
 functions:
   hello:
     handler: handler.hello
