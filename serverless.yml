@@ -26,6 +26,14 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - { 'Fn::GetAtt': ['ChatMessageTable', 'Arn'] }
+        - { 'Fn::GetAtt': ['ChatAuditTable', 'Arn'] }
+
 functions:
   hello:
     handler: handler.hello
